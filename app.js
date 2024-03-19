@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 io.attach(server);
 
-server.listen(WS_PORT || 70, () => console.log(`Listening on port 70`));
+server.listen(WS_PORT || 7000, () => console.log(`Listening on port 70`));
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
