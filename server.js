@@ -6,10 +6,10 @@ import app from './app.js';
 
 dotenv.config();
 
-const {DB_HOST} = process.env;
+const {DB_HOST, PORT} = process.env;
 
 mongoose.connect(DB_HOST)
-.then(() => {app.listen(3000, () => {
+.then(() => {app.listen(PORT, () => {
   console.log("Database connection successful");
 }) 
 })
