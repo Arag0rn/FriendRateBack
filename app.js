@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 io.attach(server);
 
-io.listen(WS_PORT || 3002, () => console.log(`Listening on port 3002`));
+server.listen(WS_PORT || 3002, () => console.log(`Listening on port 3002`));
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
