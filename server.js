@@ -2,9 +2,11 @@ import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import app from './app.js';
 
-const {DB_HOST} = process.env;
+
 
 dotenv.config();
+
+const {DB_HOST} = process.env;
 
 mongoose.connect(DB_HOST)
 .then(() => {app.listen(3000, () => {
