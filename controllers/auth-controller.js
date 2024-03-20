@@ -11,7 +11,7 @@ import { nanoid } from "nanoid";
 import { HttpError, sendEmail } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
-import io from "../configs/socketConfig.js";
+import { io } from "../configs/socketConfig.js";
 
 const postersPath = path.resolve("public", "avatar");
 

@@ -1,11 +1,11 @@
 import { Server } from 'socket.io';
 import http from 'http';
 
-const server = http.createServer();
-const io = new Server(server);
+const socketServer = http.createServer();
+const io = new Server(socketServer);
 
 io.on('connection', (socket) => {
   console.log('a User connected');
 });
 
-export default io;
+export { io, socketServer };
