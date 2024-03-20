@@ -6,6 +6,7 @@ module.exports = {
   },
   extends: ['standard', 'prettier'],
   parserOptions: {
+    sourceType: 'module',
     ecmaVersion: 12,
   },
   rules: {},

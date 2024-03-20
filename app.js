@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 import contactsRouter from './routes/api/contacts.js';
 import authRouter from './routes/api/auth-router.js';
+import swaggerRouter from './swager/swager.js';
 
 import { socketServer } from './configs/socketConfig.js';
 
@@ -22,6 +23,7 @@ app.use(express.json());
 
 app.use('/api/user', authRouter);
 app.use('/api/contacts', contactsRouter);
+app.use("/swager", swaggerRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
