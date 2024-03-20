@@ -5,7 +5,7 @@ const server = http.createServer();
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a User connected');
 });
 
 export default io;
