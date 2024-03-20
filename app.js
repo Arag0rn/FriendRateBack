@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 
 io.attach(server);
-io.listen(WS_PORT, () => console.log("Socket server is running on port " + WS_PORT));
+server.listen(WS_PORT, () => console.log("Socket server is running on port " + WS_PORT));
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
