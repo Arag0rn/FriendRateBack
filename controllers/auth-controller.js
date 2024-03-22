@@ -98,9 +98,6 @@ const signin = async(req, res) => {
     if (!user) {
         throw HttpError(401,"Email or password is wrong");
     }
-    if (user) {
-      throw httpError({ status: 409, message: 'Email already use' });
-    }
 
     if (!user.verify) {
         throw HttpError(401, "Email not verified");
@@ -111,10 +108,10 @@ const signin = async(req, res) => {
         throw HttpError(401,"Email or password is wrong" );
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, {expiresIn: "23h"});
     res.json({
-        token,
-    });
+        user: user,
+        token: user.token,
+    })
 }
 
 const current = (req, res, next) => {
