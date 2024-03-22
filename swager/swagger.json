@@ -397,11 +397,6 @@
       "LoginResponse": {
         "type": "object",
         "properties": {
-          "token": {
-            "type": "string",
-            "description": "Access token",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODQwM2YzNjdjNjhmMWQ4Mzc0NTg5MyIsImlhdCI6MTcwMzY2MzU4NywiZXhwIjoxNzA2MjU1NTg3fQ.IJ3PeR6jLf-Lub_rvo4CorBheFFG3VnQ4GZYGo4IRcs"
-          },
           "user": {
             "type": "object",
             "properties": {
@@ -410,12 +405,7 @@
                 "description": "User's id",
                 "example": "658403f367c68f1d83745893"
               },
-              "chatId": {
-                "type": "string",
-                "description": "User’s id for telegram chat bot.",
-                "example": "123456789"
-              },
-              "name": {
+              "username": {
                 "type": "string",
                 "description": "User's name",
                 "example": "user11"
@@ -427,21 +417,21 @@
                 "example": "user11@mail.com",
                 "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
               },
-              "avatar": {
+              "avatarURL": {
                 "type": "string",
                 "description": "Link image users avatar",
                 "example": "http://res.cloudinary.com/dk3glcvlk/image/upload/v1703232977/avatars/my_avatar_image.png"
               },
               "gender": {
                 "type": "string",
-                "description": "Gender (girl || man)",
-                "enum": ["girl", "man"],
+                "description": "Gender (women || man || other)",
+                "enum": ["women", "man", "other"],
                 "example": "man"
               },
-              "dailyWaterRequirement": {
-                "type": "integer",
-                "description": "Requirement water for one day",
-                "example": "1200"
+              "birthday": {
+                "type": "string",
+                "description": "User's birthday",
+                "example": "01.01.2000"
               },
               "createdAt": {
                 "type": "string",
@@ -454,6 +444,11 @@
                 "example": "2023-12-22T19:53:52.702Z"
               }
             }
+          },
+          "token": {
+            "type": "string",
+            "description": "Access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODQwM2YzNjdjNjhmMWQ4Mzc0NTg5MyIsImlhdCI6MTcwMzY2MzU4NywiZXhwIjoxNzA2MjU1NTg3fQ.IJ3PeR6jLf-Lub_rvo4CorBheFFG3VnQ4GZYGo4IRcs"
           }
         }
       },
