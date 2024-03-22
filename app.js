@@ -6,11 +6,7 @@ import dotenv from "dotenv";
 import authRouter from './routes/api/auth-router.js';
 import swaggerRouter from './swager/swager.js';
 
-import { socketServer } from './configs/socketConfig.js';
-
 dotenv.config();
-
-const {WS_PORT} = process.env;
 
 const app = express();
 
@@ -29,10 +25,6 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
-});
-
-socketServer.listen(WS_PORT, () => {
-  console.log(`Socket server is running on port ${WS_PORT}`);
 });
 
 export default app;

@@ -170,7 +170,7 @@
       }
     },
 
-    "/api/auth/profile": {
+    "/api/user/update": {
       "patch": {
         "tags": ["Auth"],
         "summary": "Update user's data",
@@ -513,10 +513,10 @@
       "UpdateUserRequest": {
         "type": "object",
         "properties": {
-          "name": {
+          "username": {
             "type": "string",
             "description": "User's name",
-            "example": "User11_1_updateName"
+            "example": "User11"
           },
           "email": {
             "type": "string",
@@ -530,6 +530,11 @@
             "description": "User's gender: [\"girl\", \"man\"]",
             "enum": ["girl", "man"],
             "example": "man"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday",
+            "example": "01.01.2000"
           }
         }
       },
