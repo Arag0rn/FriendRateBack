@@ -108,34 +108,36 @@ const signin = async(req, res) => {
         throw HttpError(401,"Email or password is wrong" );
     }
 
+    const token = jwt.sign({ email}, JWT_SECRET, { expiresIn: '1h' });
+
     res.json({
         user: user,
-        token: user.token,
+        token,
     })
 }
 
 const current = (req, res, next) => {
     req.user.token = undefined;
     res.status(200).json(req.user);
-  };
+};
 
 const signout = async(req, res)=> {
 const {_id} = req.user;
 await User.findByIdAndUpdate(_id, {token: ""})
 
-
 res.json({
     message: "Signout success"
 })
 }
+
 const updateProfile = async (req, res, next) => {
     try {
-        const { email } = req.user;
-
-        const result = await User.findOneAndUpdate({ email }, req.body, { new: true });
+        const {_id} = req.user;
+        console.log(_id);
+        const result = await User.findOneAndUpdate({ _id }, req.body, { new: true });
 
         if (!result) {
-            throw HttpError(404, `User with email=${email} not found`);
+            throw HttpError(404, `User with email=${_id} not found`);
         }
 
         res.json(result);
