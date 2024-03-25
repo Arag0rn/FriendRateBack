@@ -14,10 +14,6 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 
-io.on('connection', (socket) => {
-  console.log('A user connected');
-});
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 server.listen(WS_PORT, () => {

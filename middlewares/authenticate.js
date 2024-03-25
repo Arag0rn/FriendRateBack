@@ -9,7 +9,6 @@ const {JWT_SECRET} = process.env;
 
 const authenticate = async(req, res, next)=>{
     const {authorization} = req.headers;
-    console.log(authorization);
         if(!authorization){
             throw HttpError(401, "Authorization header not found");
         }
@@ -20,7 +19,6 @@ const authenticate = async(req, res, next)=>{
     try {
         const {email} = jwt.verify(token, JWT_SECRET);
         const user = await User.findOne({ email });
-        console.log(user);
         if(!user) {
             throw HttpError(401, "user not found");
         }

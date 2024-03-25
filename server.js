@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import app from './app.js';
+import { io } from './configs/socketConfig.js';
 
 
 
@@ -18,4 +19,7 @@ mongoose.connect(DB_HOST)
   process.exit(1);
   })
 
+  io.on('connection', (socket) => {
+    console.log('A user connected');
+  });
 

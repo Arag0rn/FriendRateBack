@@ -133,7 +133,6 @@ res.json({
 const updateProfile = async (req, res, next) => {
     try {
         const {_id} = req.user;
-        console.log(_id);
         const result = await User.findOneAndUpdate({ _id }, req.body, { new: true });
 
         if (!result) {
