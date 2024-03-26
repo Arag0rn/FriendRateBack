@@ -19,6 +19,10 @@ app.use(express.json());
 app.use('/api/user', authRouter);
 app.use("/swager", swaggerRouter);
 
+app.get('/', (req, res) => {
+  res.send('Server active!');
+});
+
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
 });
