@@ -146,10 +146,6 @@
             "description": "Bad request (invalid request body)",
             "content": {}
           },
-          "401": {
-            "description": "Email or password is wrong",
-            "content": {}
-          },
           "500": {
             "description": "Server error",
             "content": {}
