@@ -116,6 +116,16 @@ const signin = async(req, res) => {
     })
 }
 
+const deleteUser = async(req, res) => {
+    const {_id} = req.user;
+    const deletedUser = await User.findByIdAndDelete({_id});
+    if (!deletedUser) {
+        throw HttpError(401,`User with ${_id} not found`);
+    }
+
+    res.status(200).json({ message: `User with ID ${_id} has been deleted successfully` });
+}
+
 const current = (req, res, next) => {
     req.user.token = undefined;
     res.status(200).json(req.user);
@@ -169,4 +179,5 @@ export default {
     signout: ctrlWrapper(signout),
     patchAvatar: ctrlWrapper(patchAvatar),
     updateProfile: ctrlWrapper(updateProfile),
+    deleteUser: ctrlWrapper(deleteUser),
 }

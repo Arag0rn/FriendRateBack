@@ -28,6 +28,8 @@ authRouter.post("/verify", isEmptyBody, authController.verifyMail);
 
 authRouter.patch("/avatars", upload.single("avatar"), authenticate,  authController.patchAvatar);
 
-authRouter.get("/logout", authenticate, authController.signout)
+authRouter.get("/logout", authenticate, authController.signout);
+
+authRouter.delete("/delete/:_id", authenticate, authController.deleteUser)
 
 export default authRouter;
