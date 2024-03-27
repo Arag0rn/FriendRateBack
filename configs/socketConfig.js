@@ -1,32 +1,24 @@
-import { Server } from 'socket.io';
-import http from 'http';
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import cors from 'cors';
+// import { Server } from 'socket.io';
+// import { createServer } from 'http';
+// import cors from 'cors';
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// const { WS_PORT } = process.env;
 
-const { WS_PORT } = process.env;
-const app = express();
+// const server = createServer();
+// const io = new Server(server, {
+//   cors: {
+//     origin: "*"
+//   }
+// });
 
-const server = http.createServer(app);
-const io = new Server(server);
 
+// io.on('connection', (socket) => {
+//   console.log('A user connected');
+// });
 
-io.on('connection', (socket) => {
-  console.log('A user connected');
-});
+// server.listen(WS_PORT, () => {
+//   console.log(`Socket server is running on port ${WS_PORT}`);
+// });
 
-app.use(cors());
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-server.listen(WS_PORT, () => {
-  console.log(`Socket server is running on port ${WS_PORT}`);
-});
-
-export { io };
+// export { io };
