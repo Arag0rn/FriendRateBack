@@ -18,7 +18,7 @@ const postersPath = path.resolve("public", "avatar");
 
 dotenv.config();
 
-const {JWT_SECRET, BASE_URL, BASE_URL2} = process.env;
+const {JWT_SECRET, BASE_URL} = process.env;
 
 const signup = async (req, res) => {
     const { email, password } = req.body;
@@ -39,7 +39,7 @@ const signup = async (req, res) => {
     const verifyEmail = {
         to: email,
         subject: "Verify email",
-        html: `<a target="_blank" href="${BASE_URL2}/api/user/verify/${verificationToken}">Click verify email</a>`
+        html: `<a target="_blank" href="${BASE_URL}/api/user/verify/${verificationToken}">Click verify email</a>`
     }
     await sendEmail(verifyEmail)
 
@@ -83,7 +83,7 @@ const resendVerify = async (req, res) => {
     const verifyEmail = {
         to: email,
         subject: "Verify email",
-        html: `<a target="_blank" href="${BASE_URL2}/api/user/verify/${user.verificationToken}">Click verify email</a>`
+        html: `<a target="_blank" href="${BASE_URL}/api/user/verify/${user.verificationToken}">Click verify email</a>`
     }
 
     await sendEmail(verifyEmail);
