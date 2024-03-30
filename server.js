@@ -16,10 +16,11 @@ app.set('io', io);
 
 io.on('connection', (socket) => {
   console.log('A user connected');
+  socket.on('user_verified', data => {
+    console.log('A user verified');
+  });
 });
-io.on('user_verified', (socket) => {
-  console.log('A user connected');
-});
+
 
 
 mongoose.connect(DB_HOST)
