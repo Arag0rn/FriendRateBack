@@ -3,10 +3,14 @@ import dotenv from "dotenv";
 import app from './app.js';
 import { Server } from 'socket.io';
 import http from 'http';
+import connectMongoDB from './utils/db.js';
+import express from 'express';
 
 dotenv.config();
 
 const {DB_HOST, PORT} = process.env;
+
+app.use(express.static('public'));
 
 const server = http.createServer(app);
 const io = new Server(server);
@@ -23,14 +27,9 @@ io.on('connection', (socket) => {
 
 
 
-mongoose.connect(DB_HOST)
-.then(() => {server.listen(PORT, () => {
-  console.log("Database connection successful");
-}) 
-})
-.catch(error => {
-  console.log(error.message);
-  process.exit(1);
+server.listen(PORT, () => {
+  connectMongoDB();
+  console.log(`Server started on port ${PORT}`)
   })
 
 
