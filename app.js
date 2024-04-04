@@ -24,6 +24,11 @@ app.get('/', (req, res) => {
   res.send('Server active!');
 });
 
+app.get('/link', (req, res) => {
+  // підключення лінка - видалити потім
+  res.sendFile('link.html', { root: './public' });
+});
+
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
 });
@@ -31,5 +36,7 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
+
+
 
 export default app;

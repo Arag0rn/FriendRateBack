@@ -9,6 +9,8 @@ import { userSigninSchema, userSignupSchema, userEmailSchema} from '../../schema
 
 import {authenticate, isEmptyBody, upload} from "../../middlewares/index.js";
 import validateBody from '../../decorators/validaterBody.js';
+import {tryCatchWrapper} from '../../helpers/try-catch-wrapper.js'
+import {googleAuth, googleRedirect} from '../../controllers/auth-google.js'
 
 
 
@@ -30,6 +32,10 @@ authRouter.patch("/avatars", upload.single("avatar"), authenticate,  authControl
 
 authRouter.get("/logout", authenticate, authController.signout);
 
-authRouter.delete("/delete/:_id", authenticate, authController.deleteUser)
+authRouter.delete("/delete/:_id", authenticate, authController.deleteUser);
+
+authRouter.get("/google", tryCatchWrapper(googleAuth));
+
+authRouter.get("/google-redirect", tryCatchWrapper(googleRedirect));
 
 export default authRouter;
