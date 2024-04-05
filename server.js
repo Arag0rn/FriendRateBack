@@ -8,8 +8,9 @@ import express from 'express';
 
 dotenv.config();
 
-const {DB_HOST, PORT} = process.env;
+const { PORT} = process.env;
 
+//видалити потім
 app.use(express.static('public'));
 
 const server = http.createServer(app);
@@ -27,10 +28,16 @@ io.on('connection', (socket) => {
 
 
 
-server.listen(PORT, () => {
-  connectMongoDB();
-  console.log(`Server started on port ${PORT}`)
+connectMongoDB()
+  .then(() => {
+    server.listen(PORT, () => {
+      console.log(`Server started on port ${PORT}`)
+    });
   })
+  .catch(err => {
+    console.error('Error connecting to MongoDB:', err);
+  });
+
 
 
   export {io };

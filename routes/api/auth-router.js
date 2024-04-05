@@ -11,6 +11,7 @@ import {authenticate, isEmptyBody, upload} from "../../middlewares/index.js";
 import validateBody from '../../decorators/validaterBody.js';
 import {tryCatchWrapper} from '../../helpers/try-catch-wrapper.js'
 import {googleAuth, googleRedirect} from '../../controllers/auth-google.js'
+import { facebookAuth, facebookRedirect } from '../../controllers/auth-facebook.js';
 
 
 
@@ -37,5 +38,9 @@ authRouter.delete("/delete/:_id", authenticate, authController.deleteUser);
 authRouter.get("/google", tryCatchWrapper(googleAuth));
 
 authRouter.get("/google-redirect", tryCatchWrapper(googleRedirect));
+
+authRouter.get("/facebook", tryCatchWrapper(facebookAuth));
+
+authRouter.get("/facebook-redirect", tryCatchWrapper(facebookRedirect));
 
 export default authRouter;

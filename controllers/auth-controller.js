@@ -144,8 +144,17 @@ res.json({
 const updateProfile = async (req, res, next) => {
     try {
         const {_id} = req.user;
+        const { username } = req.body;
+
+        const existingUser = await User.findOne({ username });
+
+        if (existingUser && existingUser._id.toString() !== _id) {
+            throw HttpError(400, `Username ${username} is already taken`);
+        };
+
         const result = await User.findOneAndUpdate({ _id }, req.body, { new: true });
 
+     
         if (!result) {
             throw HttpError(404, `User with email=${_id} not found`);
         }
