@@ -1,25 +1,37 @@
-import express from 'express';
+import express from "express";
 
-import authController from '../../controllers/auth-controller.js';
+import authController from "../../controllers/auth-controller.js";
 
+import {
+  userSigninSchema,
+  userSignupSchema,
+//   userEmailSchema,
+} from "../../schemas/user-schema.js";
 
-
-import { userSigninSchema, userSignupSchema, userEmailSchema} from '../../schemas/user-schema.js';
-
-
-import {authenticate, isEmptyBody, upload} from "../../middlewares/index.js";
-import validateBody from '../../decorators/validaterBody.js';
-import {tryCatchWrapper} from '../../helpers/try-catch-wrapper.js'
-import {googleAuth, googleRedirect} from '../../controllers/auth-google.js'
-import { facebookAuth, facebookRedirect } from '../../controllers/auth-facebook.js';
-
-
+import { authenticate, isEmptyBody, upload } from "../../middlewares/index.js";
+import validateBody from "../../decorators/validaterBody.js";
+import { tryCatchWrapper } from "../../helpers/try-catch-wrapper.js";
+import { googleAuth, googleRedirect } from "../../controllers/auth-google.js";
+import {
+  getFacebookLoginUrl,
+  getFacebookUserData,
+} from "../../controllers/auth-facebook.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", isEmptyBody, validateBody(userSignupSchema), authController.signup);
+authRouter.post(
+  "/register",
+  isEmptyBody,
+  validateBody(userSignupSchema),
+  authController.signup
+);
 
-authRouter.post("/login", isEmptyBody, validateBody(userSigninSchema), authController.signin);
+authRouter.post(
+  "/login",
+  isEmptyBody,
+  validateBody(userSigninSchema),
+  authController.signin
+);
 
 authRouter.get("/current", authenticate, authController.current);
 
@@ -29,7 +41,12 @@ authRouter.get("/verify/:verificationToken", authController.verifyMail);
 
 authRouter.post("/verify", isEmptyBody, authController.verifyMail);
 
-authRouter.patch("/avatars", upload.single("avatar"), authenticate,  authController.patchAvatar);
+authRouter.patch(
+  "/avatars",
+  upload.single("avatar"),
+  authenticate,
+  authController.patchAvatar
+);
 
 authRouter.get("/logout", authenticate, authController.signout);
 
@@ -39,8 +56,8 @@ authRouter.get("/google", tryCatchWrapper(googleAuth));
 
 authRouter.get("/google-redirect", tryCatchWrapper(googleRedirect));
 
-authRouter.get("/facebook", tryCatchWrapper(facebookAuth));
+authRouter.get("/facebook", tryCatchWrapper(getFacebookLoginUrl));
 
-authRouter.get("/facebook-redirect", tryCatchWrapper(facebookRedirect));
+authRouter.get("/facebook-redirect", tryCatchWrapper(getFacebookUserData));
 
 export default authRouter;

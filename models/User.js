@@ -1,14 +1,19 @@
 import { Schema, model } from "mongoose";
-import { handleSaveError, preUpdate} from "./hooks.js";
+import { handleSaveError, preUpdate } from "./hooks.js";
 
-const userSchema = new Schema ({
+const userSchema = new Schema(
+  {
+    facebookId: {
+      type: String,
+      unique: true,
+    },
     password: {
       type: String,
-      required: [true, 'Set password for user'],
+      required: [true, "Set password for user"],
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, "Email is required"],
       unique: true,
     },
     gender: {
@@ -17,6 +22,13 @@ const userSchema = new Schema ({
       // required: [true, 'Gender is required'],
     },
     avatarURL: {
+      type: String,
+    },
+    language: {
+      type: String,
+      enum: ["en", "ukr"],
+    },
+    about: {
       type: String,
     },
     username: {
@@ -31,19 +43,25 @@ const userSchema = new Schema ({
       type: Boolean,
       default: false,
     },
+    provider: {
+      type: String,
+      enum: ["google", "facebook", "form"],
+    },
+
     verificationToken: {
       type: String,
     },
-    token: String
-  }, {versionKey: false, timestamps: true});
+    token: String,
+  },
+  { versionKey: false, timestamps: true }
+);
 
-  userSchema.post("save", handleSaveError);
+userSchema.post("save", handleSaveError);
 
-  userSchema.pre("findOneAndUpdate", preUpdate);
+userSchema.pre("findOneAndUpdate", preUpdate);
 
-  userSchema.post("findOneAndUpdate", handleSaveError)
+userSchema.post("findOneAndUpdate", handleSaveError);
 
-  const User = model('user', userSchema);
+const User = model("user", userSchema);
 
-
-export default User
+export default User;
