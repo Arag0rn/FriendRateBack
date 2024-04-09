@@ -34,7 +34,7 @@ const signup = async (req, res) => {
         throw HttpError(409, "Email in use");
     }
 
-    const newUser = await User.create({ ...req.body, avatarURL, password: hashPassword, verificationToken, token  });
+    const newUser = await User.create({ ...req.body, avatarURL, password: hashPassword, verificationToken, token, provider: 'form'  });
 
     const verifyEmail = {
         to: email,
@@ -48,6 +48,8 @@ const signup = async (req, res) => {
             username: newUser.username,
             email: newUser.email,
             avatarURL: newUser.avatarURL,
+            provider: newUser.provider,
+            
             verify: false,
         },
         token
