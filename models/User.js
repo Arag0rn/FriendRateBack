@@ -18,7 +18,7 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"],
+      enum: ["Male", "Female", "Other"],
       // required: [true, 'Gender is required'],
     },
     avatarURL: {
@@ -26,7 +26,7 @@ const userSchema = new Schema(
     },
     language: {
       type: String,
-      enum: ["en", "ukr"],
+      enum: ["ENG", "UKR"],
     },
     about: {
       type: String,
