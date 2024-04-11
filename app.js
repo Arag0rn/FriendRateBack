@@ -13,6 +13,16 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(cors());
 
+app.use((req, res, next) => {
+  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3002'];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use(logger(formatsLogger));
 
 app.use(express.json());
