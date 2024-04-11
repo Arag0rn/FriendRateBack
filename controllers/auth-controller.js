@@ -7,12 +7,10 @@ import path from "path";
 import jimp from 'jimp';
 import { nanoid } from "nanoid";
 
-
 import { HttpError, sendEmail } from "../helpers/index.js";
 
 import { ctrlWrapper } from "../decorators/index.js";
 import { io } from "../server.js";
-
 
 const postersPath = path.resolve("public", "avatar");
 
@@ -111,7 +109,7 @@ const signin = async(req, res) => {
         throw HttpError(401,"Email or password is wrong" );
     }
 
-    const token = jwt.sign({ email}, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ email}, JWT_SECRET, { expiresIn: '24h' });
 
     res.json({
         user: user,
@@ -145,8 +143,10 @@ res.json({
 
 const updateProfile = async (req, res, next) => {
     try {
-        const {_id} = req.user;
-        const { username } = req.body;
+        const { _id, password: currentPassword } = req.user;
+        const { username, newPassword } = req.body;
+
+        const newPasswordHash = newPassword ? await bcrypt.hash(newPassword, 10) : currentPassword;
 
         const existingUser = await User.findOne({ username });
 
@@ -154,9 +154,12 @@ const updateProfile = async (req, res, next) => {
             throw HttpError(400, `Username ${username} is already taken`);
         };
 
-        const result = await User.findOneAndUpdate({ _id }, req.body, { new: true });
+        const result = await User.findOneAndUpdate(
+            { _id },
+            { ...req.body, password: newPasswordHash },
+            { new: true }
+        );
 
-     
         if (!result) {
             throw HttpError(404, `User with email=${_id} not found`);
         }

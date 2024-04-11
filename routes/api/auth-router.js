@@ -48,7 +48,7 @@ authRouter.patch(
   authController.patchAvatar
 );
 
-authRouter.get("/logout", authenticate, authController.signout);
+authRouter.post("/logout", authenticate, authController.signout);
 
 authRouter.delete("/delete/:_id", authenticate, authController.deleteUser);
 
