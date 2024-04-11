@@ -51,7 +51,7 @@ export const googleRedirect = async (req, res) => {
 
     if (existingUser) {
       return res.redirect(
-        `${process.env.FRONTEND_BASE_URL}/profile?token=${existingUser.token}`
+        `${process.env.FRONTEND_BASE_URL}/main?token=${existingUser.token}`
       );
     } else {
       const password = generateRandomPassword();
