@@ -3,10 +3,7 @@ import { handleSaveError, preUpdate } from "./hooks.js";
 
 const userSchema = new Schema(
   {
-    facebookId: {
-      type: String,
-      unique: true,
-    },
+  
     password: {
       type: String,
       required: [true, "Set password for user"],
