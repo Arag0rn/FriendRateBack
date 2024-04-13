@@ -176,27 +176,35 @@ const signout = async (req, res) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    const { _id, password: currentPassword } = req.user;
-    const { username, newPassword } = req.body;
+    const { _id } = req.user;
+    const { username, password: newPassword } = req.body;
 
-    const newPasswordHash = newPassword
-      ? await bcrypt.hash(newPassword, 10)
-      : currentPassword;
+    let newPasswordHash = null; 
 
-    const existingUser = await User.findOne({ username });
-
-    if (existingUser && existingUser._id.toString() !== _id) {
-      throw HttpError(400, `Username ${username} is already taken`);
+    if (newPassword) {
+      newPasswordHash = await bcrypt.hash(newPassword, 10); 
     }
 
+    if (username !== req.user.username) {
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        throw new Error(`Username ${username} is already taken`);
+      }
+      req.user.username = username;
+    }
+
+    const updateFields = newPasswordHash
+    ? { ...req.body, password: newPasswordHash }
+    : req.body;
+    
     const result = await User.findOneAndUpdate(
       { _id },
-      { ...req.body, password: newPasswordHash },
+      updateFields,
       { new: true }
     );
 
     if (!result) {
-      throw HttpError(404, `User with email=${_id} not found`);
+      throw Error( `User with email=${_id} not found`);
     }
 
     res.json(result);
