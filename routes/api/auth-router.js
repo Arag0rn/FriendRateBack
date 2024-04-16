@@ -50,7 +50,7 @@ authRouter.patch(
 
 authRouter.post("/logout", authenticate, authController.signout);
 
-authRouter.delete("/delete/:_id", authenticate, authController.deleteUser);
+authRouter.delete("/delete", authenticate, authController.deleteUser);
 
 authRouter.get("/google", tryCatchWrapper(googleAuth));
 
