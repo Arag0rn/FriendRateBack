@@ -176,8 +176,8 @@ const signout = async (req, res) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    const { _id } = req.user;
-    const { username, password: newPassword } = req.body;
+    const { _id} = req.user;
+    const { username, password: newPassword, ...otherFields  } = req.body;
 
     let newPasswordHash = null; 
 
@@ -185,17 +185,25 @@ const updateProfile = async (req, res, next) => {
       newPasswordHash = await bcrypt.hash(newPassword, 10); 
     }
 
-    if (username !== req.user.username) {
+    if (username && username !== req.user.username) {
       const existingUser = await User.findOne({ username });
       if (existingUser) {
         throw new Error(`Username ${username} is already taken`);
       }
-      req.user.username = username;
     }
 
-    const updateFields = newPasswordHash
-    ? { ...req.body, password: newPasswordHash }
-    : req.body;
+    if (newPasswordHash && newPasswordHash !== req.user.password) {
+      req.user.password = newPasswordHash;
+    }
+
+    const updateFields = {...otherFields };
+    if (newPasswordHash) {
+      updateFields.password = newPasswordHash;
+    }
+    if (username && username !== req.user.username) {
+      updateFields.username = username;
+    }
+
     
     const result = await User.findOneAndUpdate(
       { _id },
