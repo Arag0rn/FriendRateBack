@@ -4,7 +4,8 @@ import { Server } from 'socket.io';
 import http from 'http';
 import connectMongoDB from './utils/db.js';
 import express from 'express';
-// import { roomHandler } from './helpers/roomHandler.js';
+import { roomHandler } from "./helpers/roomHandler.js";
+
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ app.set('io', io);
 
 io.on('connection', (socket) => {
   console.log('A user connected');
-  // roomHandler()
+  roomHandler(socket)
   socket.on("disconnect", ()=>{
     console.log('User disconnected')});
   socket.on('user_verified', data => {
