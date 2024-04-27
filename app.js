@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import authRouter from "./routes/api/auth-router.js";
 import swaggerRouter from "./swager/swager.js";
+import userRouter from "./routes/api/user-ureg-router.js";
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(logger(formatsLogger));
 app.use(express.json());
 
 app.use("/api/user", authRouter);
+app.use("/api/unreg", userRouter)
 app.use("/swager", swaggerRouter);
 
 app.get("/", (req, res) => {
