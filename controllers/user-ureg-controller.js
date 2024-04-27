@@ -35,16 +35,7 @@ const getUsername = async (req, res) => {
     }
 };
 
-const removeExpiredUsers = async () => {
-    try {
-        await UserUnreg.deleteMany({ createdAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) } });
-        console.log('Видалено застарілих користувачів');
-    } catch (error) {
-        console.error("Помилка при видаленні застарілих користувачів:", error);
-    }
-};
 
-setInterval(removeExpiredUsers, 24 * 60 * 60 * 1000);
 
 
 export default {

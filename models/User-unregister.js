@@ -15,15 +15,12 @@ const userUnregSchema = new Schema(
             enum: ["unregister"],
         },
 
-        expirationDate: {
-            type: Date,
-            default: Date.now,
-            expires: 60 * 60 * 24,
-        },
 
     },
     { versionKey: false, timestamps: true }
 );
+
+userUnregSchema.index({ createdAt: 1 }, { expireAfterSeconds: 24 * 60 * 60 });
 
 userUnregSchema.post("save", handleSaveError);
 
