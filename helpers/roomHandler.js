@@ -1,6 +1,7 @@
-import {v4 as uuidV4} from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 
-const rooms = {}
+const rooms = {};
+const MAX_USERS_PER_ROOM = 2;
 
 export const roomHandler = (socket) => {
 
@@ -40,4 +41,4 @@ export const roomHandler = (socket) => {
     socket.on('create-room', createRoom);
     socket.on("join-room",  joinRoom);
 
-};
+}
