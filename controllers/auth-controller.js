@@ -61,7 +61,7 @@ const signup = async (req, res) => {
   });
 };
 
-const verifyMail = async (req, res) => {
+async function verifyMail(req, res) {
   const { verificationToken } = req.params;
   console.log(verificationToken);
   const user = await User.findOne({ verificationToken });
@@ -79,7 +79,7 @@ const verifyMail = async (req, res) => {
   res.json({
     message: "Verification successful",
   });
-};
+}
 
 const resendVerify = async (req, res) => {
   const { email } = req.body;
@@ -179,7 +179,7 @@ const updateProfile = async (req, res, next) => {
     let newPasswordHash = null; 
 
     if (newPassword) {
-      newPasswordHash = await bcrypt.hash(newPassword, 10); 
+      newPasswordHash = await bcrypt.hash(newPassword, 10);
     }
 
     if (username && username !== req.user.username) {
@@ -233,6 +233,12 @@ const patchAvatar = async (req, res) => {
   res.status(200).json({ avatarURL: avatar });
 };
 
+const getAllUsers = async (req, res) => {
+  const { users } = req.body;
+  const foundUsers = await User.find({ _id: { $in: users } });
+  res.status(200).json(foundUsers);
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
@@ -243,4 +249,5 @@ export default {
   patchAvatar: ctrlWrapper(patchAvatar),
   updateProfile: ctrlWrapper(updateProfile),
   deleteUser: ctrlWrapper(deleteUser),
+  getAllUsers: ctrlWrapper(getAllUsers),
 };

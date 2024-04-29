@@ -3,16 +3,41 @@ import {v4 as uuidV4} from 'uuid';
 const rooms = {}
 
 export const roomHandler = (socket) => {
-    const joinRoom = ({roomId, peerId}) => {
-        console.log("user join the room", roomId);
-        socket.join(roomId);
-    }
-    const createRoom = () => {
+
+    const createRoom = ({peerId}) => {
         const roomId = uuidV4();
         rooms[roomId] = [];
-        socket.emit('room-created', {roomId});
-        console.log("user create the room")
+        socket.emit("room-created", {roomId});
+        console.log("user create the room", roomId);
+        joinRoom({ roomId, peerId });
+        console.log(rooms);
     }
-    socket.on("join-room",  joinRoom);
+    const joinRoom = ({roomId, peerId}) => {
+        if (rooms[roomId]){
+            console.log("user join the room", roomId, peerId);
+            rooms[roomId].push(peerId);
+            socket.join(roomId);
+            socket.to(roomId).emit("user-joined", {peerId});
+            socket.emit("get-user", {
+                roomId,
+                users: rooms[roomId],
+            });
+    } else {
+        createRoom({ peerId });
+    }
+        socket.on("disconnect", () => {
+            console.log("user left the room", roomId, peerId);
+            leaveRoom({ roomId, peerId })
+            Object.keys(rooms).forEach(key => delete rooms[key]);
+        })
+    }
+
+    const leaveRoom = ({ roomId, peerId }) => {
+        socket.to(roomId).emit("user-disconnected", peerId);
+        rooms[roomId] = rooms[roomId]?.filter((id) => id !== peerId);
+    };
+
     socket.on('create-room', createRoom);
+    socket.on("join-room",  joinRoom);
+
 };

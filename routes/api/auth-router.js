@@ -35,6 +35,8 @@ authRouter.post(
 
 authRouter.get("/current", authenticate, authController.current);
 
+authRouter.post("/get-all", authController.getAllUsers);
+
 authRouter.patch("/update", authenticate, authController.updateProfile);
 
 authRouter.get("/verify/:verificationToken", authController.verifyMail);
