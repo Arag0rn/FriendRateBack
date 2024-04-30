@@ -3,15 +3,11 @@ import UserUnreg from "../models/User-unregister.js";
 
 const saveUser = async (req, res) => {
     try {
-
         const count = await UserUnreg.countDocuments();
-
-
         const userNumber = (count + 1).toString().padStart(3, '0');
         const username = `User${userNumber}`;
-        const newUser = new UserUnreg({ username, status: 'unregister' });
+        const newUser = new UserUnreg({ username, status: 'unregister', createdAt: new Date() });
         await newUser.save();
-
         res.status(201).json(newUser);
     } catch (error) {
         console.error("Помилка при збереженні користувача:", error);
