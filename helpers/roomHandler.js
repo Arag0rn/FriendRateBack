@@ -6,7 +6,7 @@ const MAX_USERS_PER_ROOM = 2;
 export const roomHandler = (socket) => {
 
     const createRoom = ({peerId}) => {
-        const roomId = uuidV4();
+        const roomId = uuidV4()
         rooms[roomId] = [];
         socket.emit("room-created", {roomId});
         console.log("user create the room", roomId);
@@ -18,7 +18,7 @@ export const roomHandler = (socket) => {
             console.log("user join the room", roomId, peerId);
             rooms[roomId].push(peerId);
             socket.join(roomId);
-            socket.to(roomId).emit("user-joined", {peerId});
+            socket.emit("user-joined", { roomId, peerId });
             socket.emit("get-user", {
                 roomId,
                 users: rooms[roomId],
@@ -26,11 +26,10 @@ export const roomHandler = (socket) => {
     } else {
         createRoom({ peerId });
     }
-        socket.on("disconnect", () => {
-            console.log("user left the room", roomId, peerId);
-            leaveRoom({ roomId, peerId })
-            Object.keys(rooms).forEach(key => delete rooms[key]);
-        })
+    socket.on("disconnect", () => {
+        console.log("user left the room", roomId, peerId);
+        leaveRoom({ roomId, peerId });
+    });
     }
 
     const leaveRoom = ({ roomId, peerId }) => {
