@@ -56,7 +56,7 @@ export const roomHandler = (socket) => {
         socket.to(roomId).emit("user-disconnected", peerId);
         const room = rooms[roomId];
         if (room) {
-            room.users = room.users.filter((user) => user.id !== peerId);
+            room.users = room.users.filter((user) => user.peerId !== peerId);
             if (room.users.length === 0) {
                 delete rooms[roomId];
             }
