@@ -8,11 +8,18 @@ export const roomHandler = (socket) => {
         const existingRoom = Object.values(rooms).find(room => (
             room.language === selectedLanguage && room.gender === selectedGender
         ));
-        console.log(existingRoom);
+
+        const availableRoom = Object.values(rooms).find(room => (
+            room.users.length < 2 
+        ));
 
         if (existingRoom) {
             joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender });
             return;
+        }
+        if (availableRoom) {
+            joinRoom({ roomId: availableRoom.roomId, peerId, selectedLanguage, selectedGender });
+            return
         }
 
         const roomId = uuidV4();
