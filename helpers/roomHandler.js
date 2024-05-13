@@ -6,61 +6,63 @@ export const roomHandler = (socket) => {
     const createRoom = ({ peerId, value, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
 
         const existingRoom = Object.values(rooms).find(room => (
-            room.language === userLanguage && room.gender === userGender &&  userAge >= value[0] &&userAge<=value[1]
+            room.language === userLanguage && room.gender === userGender &&  userAge >= value[0] && userAge <= value[1]
         ));
 
-        const availableRoom = Object.values(rooms).find(room => (
-            room.users.length < 2
-        ));
-
-        if (existingRoom) {
-            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName,  userLanguage, userGender, userAge});
-            return;
-        }
-        if (availableRoom) {
-            joinRoom({ roomId: availableRoom.roomId, peerId, selectedLanguage, selectedGender, userName });
+       if (existingRoom) {
+            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge });
             return
-        }
+        } else {
+            const availableRoom = Object.values(rooms).find(room => (
+                room.users.length < 2
+            ));
 
-        const roomId = uuidV4();
-        rooms[roomId] = {
-            roomId,
-            users: [peerId],
-            names: [userName],
-            language: selectedLanguage,
-            gender: selectedGender
-        };
-        socket.emit("room-created", { roomId });
-        console.log("User created the room", roomId);
-        joinRoom({ roomId, peerId, selectedLanguage, selectedGender, userName });
-        console.log(rooms);
+            if (availableRoom) {
+                joinRoom({ roomId: availableRoom.roomId, peerId, selectedLanguage, selectedGender, userName });
+                return
+            } else {
+                const roomId = uuidV4();
+                rooms[roomId] = {
+                    roomId,
+                    users: [],
+                    names: [],
+                    language: selectedLanguage,
+                    gender: selectedGender
+                };
+                socket.emit("room-created", { roomId });
+                console.log("User created the room", roomId);
+                joinRoom({ roomId, peerId, selectedLanguage, selectedGender, userName });
+                console.log(rooms);
+            }
+        }
     };
 
-    const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userName,  userLanguage, userGender, userAge }) => {
+    const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
+        console.log("START");
         const room = rooms[roomId];
         if (room) {
-            console.log(`${userName} joined the room`, roomId, peerId);
             if (room.users.includes(peerId)) {
                 console.log("User is already in the room", roomId, peerId);
                 return;
-            }
-            if (room.users.length >= 2) {
+            } else if (room.users.length >= 2) {
                 console.log("Room is already full", roomId);
                 return;
+            } else {
+                room.users.push(peerId);
+                room.names.push(userName);
+                socket.join(roomId);
+                socket.emit("user-joined", { roomId, peerId });
+                console.log(`${userName} joined the room`, roomId, peerId);
+                socket.emit("get-user", {
+                    roomId,
+                    users: room.users,
+                    names: room.names,
+                });
             }
-            room.users.push(peerId);
-            room.names.push(userName);
-            socket.join(roomId);
-            socket.emit("user-joined", { roomId, peerId });
-            socket.emit("get-user", {
-                roomId,
-                users: room.users,
-                names: room.names,
-            });
         } else {
             createRoom({ peerId, selectedLanguage, selectedGender });
         }
-        socket.on("end-call", ( ) => {
+        socket.on("end-call", () => {
             console.log(`${userName} left the room`, roomId, peerId);
             leaveRoom({ roomId, peerId });
         });
