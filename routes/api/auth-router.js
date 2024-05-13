@@ -15,6 +15,9 @@ import {
   getFacebookUserData,
 } from "../../controllers/auth-facebook.js";
 import { resetPassword, forgotPassword } from "../../controllers/reset-password.js";
+import { handleUpload } from "../../middlewares/uploadCloud.js";
+import { updateAvatar } from "../../controllers/update-avatar.js";
+
 
 const authRouter = express.Router();
 
@@ -44,9 +47,9 @@ authRouter.post("/verify", isEmptyBody, authController.verifyMail);
 
 authRouter.patch(
   "/avatars",
-  upload.single("avatar"),
+  handleUpload,
   authenticate,
-  authController.patchAvatar
+  tryCatchWrapper(updateAvatar)
 );
 
 authRouter.post("/logout", authenticate, authController.signout);
