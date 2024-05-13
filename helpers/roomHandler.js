@@ -1,44 +1,80 @@
 import { v4 as uuidV4 } from 'uuid';
 
 const rooms = {};
-const MAX_USERS_PER_ROOM = 2;
 
 export const roomHandler = (socket) => {
+    const createRoom = ({ peerId, value, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
 
-    const createRoom = ({ peerId }) => {
+        const existingRoom = Object.values(rooms).find(room => (
+            room.language === userLanguage && room.gender === userGender && userAge >= value[0] && userAge <= value[1]
+        ));
+
+        const availableRoom = Object.values(rooms).find(room => (
+            room.users.length < 2
+        ));
+
+        if (existingRoom) {
+            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge });
+            return;
+        }
+        if (availableRoom) {
+            joinRoom({ roomId: availableRoom.roomId, peerId, selectedLanguage, selectedGender, userName });
+            return
+        }
+
         const roomId = uuidV4();
         rooms[roomId] = [];
         socket.emit("room-created", { roomId });
         console.log("user create the room", roomId);
         joinRoom({ roomId, peerId });
         console.log(rooms);
-    }
-    const joinRoom = ({ roomId, peerId }) => {
-        if (rooms[roomId]) {
-            console.log("user join the room", roomId, peerId);
-            rooms[roomId].push(peerId);
+    };
+
+    const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
+        const room = rooms[roomId];
+        if (room) {
+            console.log(`${userName} joined the room`, roomId, peerId);
+            if (room.users.includes(peerId)) {
+                console.log("User is already in the room", roomId, peerId);
+                return;
+            }
+            if (room.users.length >= 2) {
+                console.log("Room is already full", roomId);
+                return;
+            }
+            room.users.push(peerId);
+            room.names.push(userName);
             socket.join(roomId);
-            socket.to(roomId).emit("user-joined", { peerId });
+            socket.emit("user-joined", { roomId, peerId });
             socket.emit("get-user", {
                 roomId,
-                users: rooms[roomId],
+                users: room.users,
+                names: room.names,
             });
         } else {
-            createRoom({ peerId });
+            createRoom({ peerId, selectedLanguage, selectedGender });
         }
+        socket.on("end-call", () => {
+            console.log(`${userName} left the room`, roomId, peerId);
+            leaveRoom({ roomId, peerId });
+        });
         socket.on("disconnect", () => {
-            console.log("user left the room", roomId, peerId);
-            leaveRoom({ roomId, peerId })
-            Object.keys(rooms).forEach(key => delete rooms[key]);
-        })
-    }
+            console.log(`${userName} left the room`, roomId, peerId);
+            leaveRoom({ roomId, peerId });
+        });
+    };
 
     const leaveRoom = ({ roomId, peerId }) => {
         socket.to(roomId).emit("user-disconnected", peerId);
-        rooms[roomId] = rooms[roomId]?.filter((id) => id !== peerId);
+        const room = rooms[roomId];
+        if (room) {
+            room.users = room.users.filter((user) => user.peerId !== peerId);
+            if (room.users.length === 0) {
+                delete rooms[roomId];
+            }
+        }
     };
 
     socket.on('create-room', createRoom);
     socket.on("join-room", joinRoom);
-
-}
+};

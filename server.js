@@ -37,8 +37,6 @@ io.on('connection', (socket) => {
   });
 });
 
-
-
 connectMongoDB()
   .then(() => {
     server.listen(PORT, () => {
