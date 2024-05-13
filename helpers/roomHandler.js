@@ -23,10 +23,16 @@ export const roomHandler = (socket) => {
         }
 
         const roomId = uuidV4();
-        rooms[roomId] = [];
+        rooms[roomId] = {
+            roomId,
+            users: [peerId],
+            names: [userName],
+            language: selectedLanguage,
+            gender: selectedGender
+        };
         socket.emit("room-created", { roomId });
-        console.log("user create the room", roomId);
-        joinRoom({ roomId, peerId });
+        console.log("User created the room", roomId);
+        joinRoom({ roomId, peerId, selectedLanguage, selectedGender, userName });
         console.log(rooms);
     };
 
