@@ -6,7 +6,7 @@ export const roomHandler = (socket) => {
     const createRoom = ({ peerId, value, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
 
         const existingRoom = Object.values(rooms).find(room => (
-            room.language === userLanguage && room.gender === userGender &&  userAge >= value[0] &&userAge<=value[1]
+            room.language === userLanguage && room.gender === userGender && userAge >= value[0] && userAge <= value[1]
         ));
 
         const availableRoom = Object.values(rooms).find(room => (
@@ -14,7 +14,7 @@ export const roomHandler = (socket) => {
         ));
 
         if (existingRoom) {
-            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName,  userLanguage, userGender, userAge});
+            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge });
             return;
         }
         if (availableRoom) {
@@ -36,7 +36,7 @@ export const roomHandler = (socket) => {
         console.log(rooms);
     };
 
-    const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userName,  userLanguage, userGender, userAge }) => {
+    const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
         const room = rooms[roomId];
         if (room) {
             console.log(`${userName} joined the room`, roomId, peerId);
@@ -60,7 +60,7 @@ export const roomHandler = (socket) => {
         } else {
             createRoom({ peerId, selectedLanguage, selectedGender });
         }
-        socket.on("end-call", ( ) => {
+        socket.on("end-call", () => {
             console.log(`${userName} left the room`, roomId, peerId);
             leaveRoom({ roomId, peerId });
         });

@@ -20,7 +20,7 @@ const userUnregSchema = new Schema(
     { versionKey: false, timestamps: true }
 );
 
-userUnregSchema.index({ createdAt: 1 }, { expireAfterSeconds: 24 * 60 * 60 });
+userUnregSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
 userUnregSchema.post("save", handleSaveError);
 
