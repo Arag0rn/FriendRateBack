@@ -1,11 +1,9 @@
 import express from "express";
-
 import authController from "../../controllers/auth-controller.js";
-
 import {
   userSigninSchema,
   userSignupSchema,
-//   userEmailSchema,
+  //   userEmailSchema,
 } from "../../schemas/user-schema.js";
 
 import { authenticate, isEmptyBody, upload } from "../../middlewares/index.js";
@@ -16,6 +14,7 @@ import {
   getFacebookLoginUrl,
   getFacebookUserData,
 } from "../../controllers/auth-facebook.js";
+import { resetPassword, forgotPassword } from "../../controllers/reset-password.js";
 
 const authRouter = express.Router();
 
@@ -61,5 +60,9 @@ authRouter.get("/google-redirect", tryCatchWrapper(googleRedirect));
 authRouter.get("/facebook", tryCatchWrapper(getFacebookLoginUrl));
 
 authRouter.get("/facebook-redirect", tryCatchWrapper(getFacebookUserData));
+
+authRouter.post("/forgot-password", isEmptyBody, tryCatchWrapper(forgotPassword));
+
+authRouter.post("/reset-password/:resetToken", isEmptyBody, tryCatchWrapper(resetPassword));
 
 export default authRouter;
