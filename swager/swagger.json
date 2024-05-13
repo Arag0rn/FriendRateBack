@@ -13,7 +13,7 @@
   "produces": ["application/json"],
   "servers": [
     {
-      "url": "http://localhost:3000",       
+      "url": "http://localhost:3000",
       "description": "Development server"
     },
     {
@@ -21,11 +21,8 @@
       "description": "Publishing server"
     }
   ],
-  
-  "tags": [
-    { "name": "Auth", "description": "Authorization endpoints" }
 
-  ],
+  "tags": [{ "name": "Auth", "description": "Authorization endpoints" }],
 
   "paths": {
     "/api/user/register": {
@@ -154,7 +151,6 @@
       }
     },
 
-
     "/api/user/logout": {
       "post": {
         "tags": ["Auth"],
@@ -255,7 +251,7 @@
       }
     },
 
-    "/api/auth/avatars": {
+    "/api/user/avatars": {
       "patch": {
         "tags": ["Auth"],
         "summary": "Update user's avatar image",
@@ -267,9 +263,9 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object", 
+                "type": "object",
                 "properties": {
-                  "avatar": {
+                  "avatarURL": {
                     "type": "string",
                     "format": "binary"
                   }
@@ -284,7 +280,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#components/schemas/UpdateAvatarUserResponse"
+                  "$ref": "#/components/schemas/UpdateAvatarUserResponse"
                 }
               }
             }
@@ -305,34 +301,25 @@
       }
     },
 
-    "/api/auth/restore-password/{restorePasswordToken}": {
-      "patch": {
+    "/api/user/forgot-password": {
+      "post": {
         "tags": ["Auth"],
-        "summary": "Update password",
-        "parameters": [
-          {
-            "name": "restorePasswordToken",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" },
-            "example": "658600812106590a0fa53b0f"
-          }
-        ],
-        "security": [{ "Bearer": [] }],
+        "summary": "Send reset password email",
+        "parameters": [],
         "requestBody": {
-          "description": "Password update",
+          "description": "Forgot password request",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#components/schemas/UpdatePasswordRequest"
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Password updated successfully",
+            "description": "Password reset email sent successfully",
             "content": {}
           },
           "400": {
@@ -340,7 +327,58 @@
             "content": {}
           },
           "404": {
-            "description": "Page not found",
+            "description": "User not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+
+    "/api/user/reset-password/{resetToken}": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Reset user password",
+        "parameters": [
+          {
+            "name": "resetToken",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "658600812106590a0fa53b0f"
+          }
+        ],
+        "requestBody": {
+          "description": "Reset password request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request (invalid request body or passwords do not match)",
+            "content": {}
+          },
+          "401": {
+            "description": "Invalid or expired reset token",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
             "content": {}
           },
           "500": {
@@ -350,15 +388,13 @@
         }
       }
     }
-
-    
   },
 
   "components": {
     "schemas": {
       "RegistrationRequest": {
         "type": "object",
-        "required": ["email", "password" ],
+        "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
@@ -632,30 +668,48 @@
         "properties": {
           "avatar": {
             "type": "file",
-            "format":"binary"
+            "format": "binary"
           }
         }
       },
       "UpdateAvatarUserResponse": {
         "type": "object",
         "properties": {
-          "avatar": {
+          "avatarURL": {
             "type": "string",
+            "format": "binary",
             "example": "http://avatar_link.com"
           }
         }
       },
 
-      "UpdatePasswordRequest": {
+      "ForgotPasswordRequest": {
         "type": "object",
-        "required": ["password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email",
+            "example": "user11@mail.com"
+          }
+        },
+        "required": ["email"]
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
         "properties": {
           "password": {
             "type": "string",
-            "description": "User's password",
-            "example": "user-11.password12345678"
+            "description": "New password",
+            "example": "New_password123"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "description": "Confirm new password",
+            "example": "New_password123"
           }
-        }
+        },
+        "required": ["password", "confirmPassword"]
       }
     },
     "securitySchemes": {
