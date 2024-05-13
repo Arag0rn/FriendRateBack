@@ -30,6 +30,7 @@
     "ngrok": "^5.0.0-beta.2",
     "nodemailer": "^6.9.7",
     "query-string": "^9.0.0",
+    "sharp": "^0.33.3",
     "socket.io": "^4.7.5",
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1",
