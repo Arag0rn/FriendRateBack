@@ -6,27 +6,28 @@ export const roomHandler = (socket) => {
     const createRoom = ({ peerId, value, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
 
         const existingRoom = Object.values(rooms).find(room => (
-            room.language === userLanguage && room.gender === userGender && userAge >= value[0] && userAge <= value[1]
+            room.language === userLanguage && room.gender === userGender &&  userAge >= value[0] && userAge <= value[1]
         ));
+
+        if (existingRoom) {
+            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge });
+            return; // Exit early if existing room found
+        }
 
         const availableRoom = Object.values(rooms).find(room => (
             room.users.length < 2
         ));
 
-        if (existingRoom) {
-            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge });
-            return;
-        }
         if (availableRoom) {
             joinRoom({ roomId: availableRoom.roomId, peerId, selectedLanguage, selectedGender, userName });
-            return
+            return; // Exit early if available room found
         }
 
         const roomId = uuidV4();
         rooms[roomId] = {
             roomId,
-            users: [peerId],
-            names: [userName],
+            users: [],
+            names: [],
             language: selectedLanguage,
             gender: selectedGender
         };
@@ -39,24 +40,24 @@ export const roomHandler = (socket) => {
     const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
         const room = rooms[roomId];
         if (room) {
-            console.log(`${userName} joined the room`, roomId, peerId);
             if (room.users.includes(peerId)) {
                 console.log("User is already in the room", roomId, peerId);
                 return;
-            }
-            if (room.users.length >= 2) {
+            } else if (room.users.length >= 2) {
                 console.log("Room is already full", roomId);
                 return;
+            } else {
+                room.users.push(peerId);
+                room.names.push(userName);
+                socket.join(roomId);
+                console.log(`${userName} joined the room`, roomId, peerId);
+                socket.emit("user-joined", { roomId, peerId });
+                socket.emit("get-user", {
+                    roomId,
+                    users: room.users,
+                    names: room.names,
+                });
             }
-            room.users.push(peerId);
-            room.names.push(userName);
-            socket.join(roomId);
-            socket.emit("user-joined", { roomId, peerId });
-            socket.emit("get-user", {
-                roomId,
-                users: room.users,
-                names: room.names,
-            });
         } else {
             createRoom({ peerId, selectedLanguage, selectedGender });
         }
@@ -83,4 +84,4 @@ export const roomHandler = (socket) => {
 
     socket.on('create-room', createRoom);
     socket.on("join-room", joinRoom);
-};
+}
