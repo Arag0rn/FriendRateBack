@@ -43,6 +43,7 @@ export const roomHandler = (socket) => {
     const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
         const room = rooms[roomId];
         if (room) {
+            console.log(`${userName} joined the room`, roomId, peerId);
             if (room.users.includes(peerId)) {
                 console.log("User is already in the room", roomId, peerId);
                 return;
@@ -54,7 +55,6 @@ export const roomHandler = (socket) => {
                 room.names.push(userName);
                 socket.join(roomId);
                 socket.emit("user-joined", { roomId, peerId });
-                console.log(`${userName} joined the room`, roomId, peerId);
                 socket.emit("get-user", {
                     roomId,
                     users: room.users,
@@ -87,4 +87,5 @@ export const roomHandler = (socket) => {
 
     socket.on('create-room', createRoom);
     socket.on("join-room", joinRoom);
-};
+}
+}
