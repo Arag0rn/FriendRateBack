@@ -56,7 +56,7 @@ export const roomHandler = (socket) => {
                     roomId,
                     users: room.users,
                     names: room.names,
-                })
+                });
             }
         } else {
             createRoom({ peerId, selectedLanguage, selectedGender });
@@ -76,9 +76,8 @@ export const roomHandler = (socket) => {
         const room = rooms[roomId];
         if (room) {
             room.users = room.users.filter((user) => user.peerId !== peerId);
-            if (room.users.length === 0) {
                 delete rooms[roomId];
-            }
+
         }
     };
 
