@@ -11,7 +11,7 @@ export const roomHandler = (socket) => {
 
         if (existingRoom) {
             joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge });
-            return; // Exit early if existing room found
+            return;
         }
 
         const availableRoom = Object.values(rooms).find(room => (
@@ -20,7 +20,7 @@ export const roomHandler = (socket) => {
 
         if (availableRoom) {
             joinRoom({ roomId: availableRoom.roomId, peerId, selectedLanguage, selectedGender, userName });
-            return; // Exit early if available room found
+            return;
         }
 
         const roomId = uuidV4();

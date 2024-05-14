@@ -172,14 +172,8 @@ const signout = async (req, res) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    const { _id} = req.user;
-    const { username, password: newPassword, ...otherFields  } = req.body;
-
-    let newPasswordHash = null; 
-
-    if (newPassword) {
-      newPasswordHash = await bcrypt.hash(newPassword, 10);
-    }
+    const { _id } = req.user;
+    const { username, password, ...otherFields } = req.body;
 
     if (username && username !== req.user.username) {
       const existingUser = await User.findOne({ username });
@@ -188,19 +182,14 @@ const updateProfile = async (req, res, next) => {
       }
     }
 
-    if (newPasswordHash && newPasswordHash !== req.user.password) {
-      req.user.password = newPasswordHash;
-    }
-
-    const updateFields = {...otherFields };
-    if (newPasswordHash) {
-      updateFields.password = newPasswordHash;
+    const updateFields = { ...otherFields };
+    if (password && password !== req.user.password) {
+      updateFields.password = await bcrypt.hash(password, 10);
     }
     if (username && username !== req.user.username) {
       updateFields.username = username;
     }
 
-    
     const result = await User.findOneAndUpdate(
       { _id },
       updateFields,
@@ -208,7 +197,7 @@ const updateProfile = async (req, res, next) => {
     );
 
     if (!result) {
-      throw Error( `User with email=${_id} not found`);
+      throw new Error(`User with email=${_id} not found`);
     }
 
     res.json(result);
