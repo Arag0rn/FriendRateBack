@@ -32,7 +32,7 @@ export const usersHandler = (socket) => {
     });
 
     const leaveHub = (userId) => {
-        socket.to(userId).emit("user-disconnected", userId);
+        socket.emit("user-disconnected", userId);
         users = users.filter(user => user !== userId);
     };
 
