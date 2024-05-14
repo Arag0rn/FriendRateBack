@@ -50,13 +50,15 @@ export const roomHandler = (socket) => {
                 room.users.push(peerId);
                 room.names.push(userName);
                 socket.join(roomId);
+                if (room.users.length >= 2){
                 console.log(`${userName} joined the room`, roomId, peerId);
                 socket.emit("user-joined", { roomId, peerId });
                 socket.emit("get-user", {
                     roomId,
                     users: room.users,
                     names: room.names,
-                });
+                })
+                }
             }
         } else {
             createRoom({ peerId, selectedLanguage, selectedGender });
