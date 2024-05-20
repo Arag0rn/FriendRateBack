@@ -48,10 +48,12 @@ export const roomHandler = (socket) => {
                 return;
             } else {
                 room.users.push(peerId);
-                room.names.push(userName);
+                room.names.push(userName || 'Unregistered User');
                 socket.join(roomId);
-                console.log(`${userName} joined the room`, roomId, peerId);
-                socket.emit("user-joined", { roomId, peerId });
+                console.log(`${userName}  joined the room`, roomId, peerId);
+                console.log(rooms);
+                socket.emit("user-joined", { roomId, peerId, names: room.names,});
+                console.log(room.names);
                 socket.emit("get-user", {
                     roomId,
                     users: room.users,
