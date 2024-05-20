@@ -52,7 +52,7 @@ export const roomHandler = (socket) => {
                 socket.join(roomId);
                 console.log(`${userName}  joined the room`, roomId, peerId);
                 console.log(rooms);
-                socket.emit("user-joined", { roomId, peerId, names: room.names,});
+                socket.to(roomId).emit("user-joined", { roomId, peerId, names: room.names,});
                 console.log(room.names);
                 socket.emit("get-user", {
                     roomId,
