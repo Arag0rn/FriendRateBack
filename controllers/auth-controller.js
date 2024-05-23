@@ -221,6 +221,32 @@ const patchAvatar = async (req, res) => {
   res.status(200).json({ avatarURL: avatar });
 };
 
+const setRate = async (req, res, next) => {
+
+const { username, rate } = req.body;
+
+console.log(username);
+
+const user = await User.findOne({ username });
+
+if (!user) {
+  return res.status(404).json({ error: 'User not found' });
+}
+console.log(rate);
+
+const updatedUser = await User.findByIdAndUpdate(
+  user._id,
+  {
+    $inc: { rate, ratingCount: 1 }
+  },
+  { new: true }
+);
+
+console.log(updatedUser);
+res.status(200).json(updatedUser);
+
+}
+
 const getAllUsers = async (req, res) => {
   const { users } = req.body;
   const foundUsers = await User.find({ _id: { $in: users } });
@@ -238,4 +264,5 @@ export default {
   updateProfile: ctrlWrapper(updateProfile),
   deleteUser: ctrlWrapper(deleteUser),
   getAllUsers: ctrlWrapper(getAllUsers),
+  setRate:ctrlWrapper(setRate),
 };

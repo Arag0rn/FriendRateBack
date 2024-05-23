@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { handleSaveError, preUpdate } from "./hooks.js";
 
+
 const userSchema = new Schema(
   {
   
@@ -43,6 +44,14 @@ const userSchema = new Schema(
     provider: {
       type: String,
       enum: ["google", "facebook", "form"],
+    },
+    rate: {
+      type: Number,
+      default: false,
+    },
+    ratingCount: {
+      type: Number,
+      default: false,
     },
 
     verificationToken: {
