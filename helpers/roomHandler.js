@@ -3,14 +3,15 @@ import { v4 as uuidV4 } from 'uuid';
 const rooms = {};
 
 export const roomHandler = (socket) => {
-    const createRoom = ({ peerId, value, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
+    const createRoom = ({ peerId, value, selectedLanguage, selectedGender, userLanguage, userGender, userAge, userData}) => {
 
+        console.log(userData);
         const existingRoom = Object.values(rooms).find(room => (
             room.language === userLanguage && room.gender === userGender &&  userAge >= value[0] && userAge <= value[1]
         ));
 
         if (existingRoom) {
-            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge });
+            joinRoom({ roomId: existingRoom.roomId, peerId, selectedLanguage, selectedGender, userLanguage, userGender, userAge,  userData});
             return;
         }
 
@@ -19,7 +20,7 @@ export const roomHandler = (socket) => {
         ));
 
         if (availableRoom) {
-            joinRoom({ roomId: availableRoom.roomId, peerId, selectedLanguage, selectedGender, userName });
+            joinRoom({ roomId: availableRoom.roomId, peerId, selectedLanguage, selectedGender, userData});
             return;
         }
 
@@ -33,11 +34,11 @@ export const roomHandler = (socket) => {
         };
         socket.emit("room-created", { roomId });
         console.log("User created the room", roomId);
-        joinRoom({ roomId, peerId, selectedLanguage, selectedGender, userName });
+        joinRoom({ roomId, peerId, selectedLanguage, selectedGender, userData});
         console.log(rooms);
     };
 
-    const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userName, userLanguage, userGender, userAge }) => {
+    const joinRoom = ({ roomId, peerId, selectedLanguage, selectedGender, userLanguage, userGender, userAge, userData}) => {
         const room = rooms[roomId];
         if (room) {
             if (room.users.includes(peerId)) {
@@ -48,9 +49,14 @@ export const roomHandler = (socket) => {
                 return;
             } else {
                 room.users.push(peerId);
-                room.names.push(userName || 'Unregistered User');
+                room.names.push({
+                    userName: userData.userName || 'Unregistered User',
+                    avatarURL: userData.avatarURL,
+                    rate: userData.rate,
+                    ratingCount: userData.ratingCount
+                } );
                 socket.join(roomId);
-                console.log(`${userName}  joined the room`, roomId, peerId);
+                console.log(`${userData.userName}  joined the room`, roomId, peerId);
                 console.log(rooms);
                 socket.to(roomId).emit("user-joined", { roomId, peerId, names: room.names,});
                 console.log(room.names);
@@ -61,14 +67,14 @@ export const roomHandler = (socket) => {
                 });
             }
         } else {
-            createRoom({ peerId, selectedLanguage, selectedGender });
+            createRoom({ peerId, value, selectedLanguage, selectedGender, userLanguage, userGender, userAge,  userData});
         }
         socket.on("end-call", () => {
-            console.log(`${userName} left the room`, roomId, peerId);
+            console.log(`${userData.userName} left the room`, roomId, peerId);
             leaveRoom({ roomId, peerId });
         });
         socket.on("disconnect", () => {
-            console.log(`${userName} left the room`, roomId, peerId);
+            console.log(`${userData.userName} left the room`, roomId, peerId);
             leaveRoom({ roomId, peerId });
         });
     };
