@@ -7,7 +7,7 @@ import { HttpError, sendEmail } from "../helpers/index.js";
 
 dotenv.config();
 
-const { JWT_SECRET, BASE_URL } = process.env;
+const { JWT_SECRET, FRONTEND_BASE_URL } = process.env;
 
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
@@ -21,7 +21,7 @@ export const forgotPassword = async (req, res) => {
 
     await User.findOneAndUpdate({ email }, { resetToken });
 
-    const resetPasswordLink = `${BASE_URL}/api/user/reset-password/${resetToken}`;
+    const resetPasswordLink = `${FRONTEND_BASE_URL}/sign-in/restore/new-password/${resetToken}`;;
 
     const resetEmail = {
         to: email,
