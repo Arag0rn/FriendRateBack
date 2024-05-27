@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import authRouter from "./routes/api/auth-router.js";
 import swaggerRouter from "./swager/swager.js";
-import userRouter from "./routes/api/user-ureg-router.js";
+import userRouter from "./routes/api/user-ureg-router.js"; 
 
 dotenv.config();
 
