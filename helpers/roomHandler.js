@@ -2,8 +2,21 @@ import { v4 as uuidV4 } from 'uuid';
 
 const rooms = {};
 
+// const generateRandomNumber = () => {
+//     return Math.floor(1000 + Math.random() * 9000);
+// };
+
 export const roomHandler = (socket) => {
-    const createRoom = ({ peerId, value, selectedLanguage, selectedGender, userLanguage, userGender, userAge, userData}) => {
+    const createRoom = ({
+        peerId,
+        value = [18, 99],
+        selectedLanguage = 'en',
+        selectedGender = 'any',
+        userLanguage = 'en',
+        userGender = 'any',
+        userAge = 18,
+        userData = { avatarURL: '', rate: 0, ratingCount: 0 }
+    } = {}) => {
 
         console.log(userData);
         const existingRoom = Object.values(rooms).find(room => (

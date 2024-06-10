@@ -9,8 +9,11 @@ dotenv.config();
 
 const { JWT_SECRET, FRONTEND_BASE_URL } = process.env;
 
+
+
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
+
 
     const user = await User.findOne({ email });
     if (!user) {
@@ -21,7 +24,8 @@ export const forgotPassword = async (req, res) => {
 
     await User.findOneAndUpdate({ email }, { resetToken });
 
-    const resetPasswordLink = `${FRONTEND_BASE_URL}/sign-in/restore/new-password/${resetToken}`;;
+    const resetPasswordLink = `${FRONTEND_BASE_URL}/sign-in/restore/new-password/${resetToken}`;
+    console.log(resetPasswordLink);
 
     const resetEmail = {
         to: email,

@@ -5,14 +5,13 @@ import http from 'http';
 import connectMongoDB from './utils/db.js';
 import express from 'express';
 import { roomHandler } from "./helpers/roomHandler.js";
-import { usersHandler } from "./helpers/usersHandler.js";
+
 
 
 dotenv.config();
 
 const { PORT} = process.env;
 
-//видалити потім
 app.use(express.static('public'));
 
 const server = http.createServer(app);
@@ -28,7 +27,7 @@ app.set('io', io);
 
 io.on('connection', (socket) => {
   roomHandler(socket);
-  usersHandler(socket);
+
   socket.on("disconnect", ()=>{
     console.log('User disconnected')});
   socket.on('user_verified', data => {
