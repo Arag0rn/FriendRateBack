@@ -4,7 +4,7 @@ import { handleSaveError, preUpdate } from "./hooks.js";
 
 const userSchema = new Schema(
   {
-  
+
     password: {
       type: String,
       required: [true, "Set password for user"],
@@ -58,6 +58,7 @@ const userSchema = new Schema(
       type: String,
     },
     token: String,
+    refreshToken: String,
   },
   { versionKey: false, timestamps: true }
 );
