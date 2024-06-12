@@ -39,6 +39,8 @@ authRouter.get("/current", authenticate, authController.current);
 
 authRouter.post("/get-all", authController.getAllUsers);
 
+authRouter.post("/get-all-rate", authController.getAllUsersWithoutId);
+
 authRouter.patch("/update", authenticate, authController.updateProfile);
 
 authRouter.patch("/set-rate", authController.setRate);

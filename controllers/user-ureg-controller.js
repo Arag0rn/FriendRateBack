@@ -3,9 +3,11 @@ import UserUnreg from "../models/User-unregister.js";
 
 const saveUser = async (req, res) => {
     try {
+        const { userName } = req.body;
+        console.log("This is userName", userName);
         const count = await UserUnreg.countDocuments();
-        const userNumber = (count + 1).toString().padStart(3, '0');
-        const username = `User${userNumber}`;
+        // const userNumber = (count + 1).toString().padStart(3, '0');
+        const username = userName;
         const newUser = new UserUnreg({ username, status: 'unregister', createdAt: new Date() });
         await newUser.save();
         res.status(201).json(newUser);

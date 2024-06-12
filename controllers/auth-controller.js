@@ -159,7 +159,7 @@ const deleteUser = async (req, res) => {
 const current = (req, res, next) => {
   req.user.token = undefined;
   res.status(200).json(req.user);
-};
+}
 
 const signout = async (req, res) => {
   const { _id } = req.user;
@@ -215,7 +215,6 @@ const patchAvatar = async (req, res) => {
   const image = await jimp.read(oldPath);
   await image.resize(250, 250);
   await image.writeAsync(newPath);
-
   await User.findByIdAndUpdate(_id, { avatarURL: avatar });
 
   res.status(200).json({ avatarURL: avatar });
@@ -224,15 +223,11 @@ const patchAvatar = async (req, res) => {
 const setRate = async (req, res, next) => {
 
 const { username, rate } = req.body;
-
-console.log(username);
-
 const user = await User.findOne({ username });
 
 if (!user) {
   return res.status(404).json({ error: 'User not found' });
 }
-console.log(rate);
 
 const updatedUser = await User.findByIdAndUpdate(
   user._id,
@@ -241,8 +236,6 @@ const updatedUser = await User.findByIdAndUpdate(
   },
   { new: true }
 );
-
-console.log(updatedUser);
 res.status(200).json(updatedUser);
 
 }
@@ -250,6 +243,12 @@ res.status(200).json(updatedUser);
 const getAllUsers = async (req, res) => {
   const { users } = req.body;
   const foundUsers = await User.find({ _id: { $in: users } });
+  res.status(200).json(foundUsers);
+};
+
+const getAllUsersWithoutId = async (req, res) => {
+  const { users } = req.body;
+  const foundUsers = await User.find();
   res.status(200).json(foundUsers);
 };
 
@@ -265,4 +264,5 @@ export default {
   deleteUser: ctrlWrapper(deleteUser),
   getAllUsers: ctrlWrapper(getAllUsers),
   setRate:ctrlWrapper(setRate),
+  getAllUsersWithoutId:ctrlWrapper(getAllUsersWithoutId),
 };
