@@ -207,6 +207,36 @@
       }
     },
 
+    "/api/user/get-all-rate": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Get info about all users",
+        "security": [{ "Bearer": [] }],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Operation success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/CurrentUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+
+
     "/api/user/update": {
       "patch": {
         "tags": ["Auth"],
@@ -575,15 +605,33 @@
             "description": "User's id",
             "example": "658403f367c68f1d83745893"
           },
-          "chatId": {
+          "avatarURL": {
             "type": "string",
-            "description": "User’s id for telegram chat bot.",
-            "example": "123456789"
+            "description": "User's avatar",
+            "example": "https://res.cloudinary.com/dgntfoibi/image/upload/v1716558614/avatars/hxhkxndhdxp8tdpxngdz.jpg"
           },
-          "name": {
+          "verify": {
+            "type": "boolean",
+            "example": "false"
+          },
+          "username": {
             "type": "string",
             "description": "User's name",
             "example": "User11_1"
+          },
+          "about": {
+            "type": "string",
+            "description": "User's about",
+            "example": "something about me"
+          },
+          "birthday": {
+            "type": "string",
+            "description": "User's birthday",
+            "example": "02.04.1986"
+          },
+          "language": {
+            "type": "string",
+            "example": ["ENG", "UKR", "УКР", "АНГЛ"]
           },
           "email": {
             "type": "string",
@@ -594,20 +642,19 @@
           },
           "gender": {
             "type": "string",
-            "description": "Gender (girl || man)",
-            "example": "girl"
+            "example": ["Male", "Female", "Other", "Чоловік", "Жінка", "Інше"]
           },
-          "avatar": {
-            "type": "string",
-            "description": "URL for users avatar image",
-            "example": "http://avatar_link.com"
+          "rate": {
+            "type": "number",
+            "description": "User's rate",
+            "example": 619
           },
-          "dailyWaterRequirement": {
-            "type": "integer",
-            "description": "Requirement water for one day",
-            "example": "1200"
-          }
+          "ratingCount": {
+            "type": "number",
+            "description": "User's ratingCount",
+            "example": 136
         }
+      }
       },
 
       "UpdateUserRequest": {
