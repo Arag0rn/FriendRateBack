@@ -78,7 +78,7 @@ export const googleRedirect = async (req, res) => {
 
      res
        .status(200)
-       .redirect(`${process.env.FRONTEND_BASE_URL}/current/${token}`);
+       .redirect(`${process.env.FRONTEND_BASE_URL}/current/${user.token}`);
   } catch (error) {
     console.error("Error during Google authentication:", error);
     return res.status(500).send("Internal Server Error");
