@@ -39,7 +39,7 @@ const authenticate = async (req, res, next) => {
                 }
                 const newToken = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
                 await User.findByIdAndUpdate(user._id, { token: newToken });
-                req.headers.authorization = Bearer ${newToken};
+                req.headers.authorization = `Bearer ${newToken};`
                 req.user = user;
                 next();
             } catch (refreshError) {
@@ -51,4 +51,4 @@ const authenticate = async (req, res, next) => {
     }
 };
 
-export default ctrlWrapper(authenticate); 
+export default ctrlWrapper(authenticate)
