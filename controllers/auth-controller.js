@@ -157,9 +157,9 @@ const deleteUser = async (req, res) => {
 };
 
 const current = (req, res, next) => {
-  req.user.token = undefined;
-  res.status(200).json(req.user);
-}
+  const userWithoutToken = { ...req.user, token: undefined };
+  res.status(200).json(userWithoutToken);
+};
 
 const signout = async (req, res) => {
   const { _id } = req.user;
