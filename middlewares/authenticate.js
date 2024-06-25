@@ -8,7 +8,8 @@ dotenv.config();
 const { JWT_SECRET } = process.env;
 
 const authenticate = async (req, res, next) => {
-    const { authorization } = req.headers;
+    const { authorization, refresh_token: refreshToken } = req.headers;
+    
     if (!authorization) {
         return next(HttpError(401, "Authorization header not found"));
     }
@@ -28,21 +29,21 @@ const authenticate = async (req, res, next) => {
         next();
     } catch (error) {
         if (error.name === "TokenExpiredError") {
-
-            const user = await User.findOne({ refreshToken: req.headers.refresh_token });
-            if (user) {
-                try {
-                    const newToken = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-
-                    await User.findByIdAndUpdate(user._id, { token: newToken });
-                    req.headers.authorization = `Bearer ${newToken}`;
-                    req.user = user;
-                    next();
-                } catch (refreshError) {
-                    return next(HttpError(401, "Failed to refresh your session, please log in again."));
+            if (!refreshToken) {
+                return next(HttpError(401, "No refresh token provided"));
+            }
+            try {
+                const user = await User.findOne({ refreshToken });
+                if (!user) {
+                    return next(HttpError(401, "Invalid refresh token"));
                 }
-            } else {
-                return next(HttpError(401, "Valid refresh token not found, please log in again."));
+                const newToken = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+                await User.findByIdAndUpdate(user._id, { token: newToken });
+                req.headers.authorization = `Bearer ${newToken}`;
+                req.user = user;
+                next();
+            } catch (refreshError) {
+                return next(HttpError(401, "Failed to refresh your session, please log in again."));
             }
         } else {
             return next(HttpError(401, "Invalid token"));
