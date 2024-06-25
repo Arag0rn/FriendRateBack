@@ -54,17 +54,16 @@ export const googleRedirect = async (req, res) => {
     const { email, name: username, picture: avatarURL } = userData.data;
 
     let user = await User.findOne({ email });
+    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
 
     if (user) {
 
       user = await User.findByIdAndUpdate(user._id, {
-        token: accessToken,
+        token: token,
         ...(refreshToken && { refreshToken }),
       }, { new: true });
     } else {
       const password = generateRandomPassword();
-
-      const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
 
       user = new User({
         email,
