@@ -1,7 +1,10 @@
 import axios from "axios";
 import queryString from "query-string";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { generateRandomPassword } from "../helpers/createPassword.js";
+
+const { JWT_SECRET, BASE_URL } = process.env;
 
 export const googleAuth = async (req, res) => {
   const stringifiedParams = queryString.stringify({
@@ -61,6 +64,8 @@ export const googleRedirect = async (req, res) => {
     } else {
       const password = generateRandomPassword();
 
+      const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
+
       user = new User({
         email,
         username,
@@ -68,7 +73,7 @@ export const googleRedirect = async (req, res) => {
         password,
         verify: true,
         provider: "google",
-        token: accessToken,
+        token: token,
         ...(refreshToken && { refreshToken }),
       });
 
