@@ -13,6 +13,8 @@ cloudinary.config({
     api_secret: CLOUDINARY_API_SECRET,
 });
 
+console.log(CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET);
+
 const upload = multer({
     dest: "uploads/"
 });

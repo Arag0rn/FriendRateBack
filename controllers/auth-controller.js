@@ -25,16 +25,15 @@ const signup = async (req, res) => {
   const verificationToken = nanoid();
 
   const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
-  const avatarURL = gravatar.url(email, { s: "200", r: "pg", d: "mm" });
 
   const user = await User.findOne({ email });
+  console.log(user);
   if (user) {
     throw HttpError(409, "Email in use");
   }
 
   const newUser = await User.create({
     ...req.body,
-    avatarURL,
     password: hashPassword,
     verificationToken,
     token,
@@ -107,11 +106,13 @@ const signin = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
+    console.log(user);
     if (!user) {
       throw HttpError(401, "Email or password is wrong");
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);
+  
     if (!passwordCompare) {
       throw HttpError(401, "Email or password is wrong");
     }
