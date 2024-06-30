@@ -24,7 +24,7 @@ const signup = async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   const verificationToken = nanoid();
 
-  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "24h" });
 
   const user = await User.findOne({ email });
   console.log(user);
