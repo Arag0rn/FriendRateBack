@@ -15,7 +15,7 @@ import {
   getFacebookUserData,
 } from "../../controllers/auth-facebook.js";
 import { resetPassword, forgotPassword } from "../../controllers/reset-password.js";
-import { handleUpload } from "../../middlewares/uploadCloud.js";
+import { handleUpload, uploadToCloudinary } from "../../middlewares/uploadCloud.js";
 import { updateAvatar } from "../../controllers/update-avatar.js";
 
 
@@ -52,6 +52,7 @@ authRouter.post("/verify", isEmptyBody, authController.verifyMail);
 authRouter.patch(
   "/avatars",
   handleUpload,
+  uploadToCloudinary,
   authenticate,
   tryCatchWrapper(updateAvatar)
 );
