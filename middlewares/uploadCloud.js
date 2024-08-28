@@ -13,7 +13,6 @@ cloudinary.config({
     api_secret: CLOUDINARY_API_SECRET,
 });
 
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -25,11 +24,9 @@ export const uploadToCloudinary = async (req, res, next) => {
             return res.status(400).json({ error: "File not provided" });
         }
 
-
         const stream = new Readable();
         stream.push(req.file.buffer);
         stream.push(null); 
-
 
         const uploadStream = cloudinary.uploader.upload_stream({
             folder: "avatars",
@@ -40,6 +37,7 @@ export const uploadToCloudinary = async (req, res, next) => {
             ]
         }, (error, result) => {
             if (error) {
+                console.error('Cloudinary upload error:', error);
                 return res.status(400).json({ error: error.message });
             }
 
@@ -47,8 +45,12 @@ export const uploadToCloudinary = async (req, res, next) => {
             next();
         });
 
-        stream.pipe(uploadStream);
+        stream.pipe(uploadStream).on('error', (error) => {
+            console.error('Stream pipe error:', error); 
+            return res.status(500).json({ error: 'Error uploading to Cloudinary' });
+        });
     } catch (error) {
+        console.error('Unhandled error:', error);
         return res.status(400).json({ error: error.message });
     }
 };
