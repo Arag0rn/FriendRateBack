@@ -1,8 +1,7 @@
 import multer from "multer";
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from "dotenv";
-import fs from 'fs';
-import { promisify } from 'util';
+import { Readable } from 'stream';
 
 dotenv.config();
 
@@ -14,17 +13,11 @@ cloudinary.config({
     api_secret: CLOUDINARY_API_SECRET,
 });
 
-const upload = multer({ dest: 'uploads/' });
-const unlinkAsync = promisify(fs.unlink);
+// Конфигурация multer для получения файла в память
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-export const handleUpload = (req, res, next) => {
-    upload.single("avatarURL")(req, res, (err) => {
-        if (err) {
-            return res.status(400).json({ error: err.message });
-        }
-        next();
-    });
-};
+export const handleUpload = upload.single("avatarURL");
 
 export const uploadToCloudinary = async (req, res, next) => {
     try {
@@ -32,21 +25,28 @@ export const uploadToCloudinary = async (req, res, next) => {
             return res.status(400).json({ error: "File not provided" });
         }
 
-        const filePath = req.file.path;
+        const stream = new Readable();
+        stream.push(req.file.buffer);
+        stream.push(null);
 
-        const result = await cloudinary.uploader.upload(filePath, {
+        const uploadStream = cloudinary.uploader.upload_stream({
             folder: "avatars",
             allowed_formats: ["jpg", "png"],
             transformation: [
                 { width: 320, height: 320, crop: "fill", gravity: "face" },
                 { quality: "auto" }
             ]
+        }, (error, result) => {
+            if (error) {
+                return res.status(400).json({ error: error.message });
+            }
+
+
+            req.cloudinaryUrl = result.secure_url;
+            next();
         });
 
-        await unlinkAsync(filePath);
-
-        req.cloudinaryUrl = result.secure_url;
-        next();
+        stream.pipe(uploadStream);
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
