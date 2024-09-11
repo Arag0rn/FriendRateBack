@@ -4,7 +4,7 @@ import { generateRandomPassword } from "../helpers/createPassword.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const telegram = async (req, res) => {
-    const { first_name, last_name, username, photo_url } = req.body.user;
+    const { username, photo_url } = req.body;
     const { auth_date } = req.body;
 
     const email = `${username}@telegram.com`;
