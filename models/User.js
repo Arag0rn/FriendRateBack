@@ -43,7 +43,7 @@ const userSchema = new Schema(
     },
     provider: {
       type: String,
-      enum: ["google", "facebook", "form"],
+      enum: ["google", "facebook", "form", "telegram"],
     },
     rate: {
       type: Number,
