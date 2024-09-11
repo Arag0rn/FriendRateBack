@@ -73,4 +73,6 @@ authRouter.post("/forgot-password", isEmptyBody, tryCatchWrapper(forgotPassword)
 
 authRouter.post("/reset-password/:resetToken", isEmptyBody, tryCatchWrapper(resetPassword));
 
+authRouter.post('/telegram', authController.telegram)
+
 export default authRouter;

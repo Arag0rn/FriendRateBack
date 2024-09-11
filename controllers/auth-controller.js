@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/User.js";
-import gravatar from "gravatar";
 import path from "path";
 import jimp from "jimp";
 import { nanoid } from "nanoid";
@@ -124,7 +123,6 @@ const signin = async (req, res) => {
       token,
     });
   } catch (error) {
-    // перевірка на токен
     if (
       error.name === "JsonWebTokenError" ||
       error.name === "TokenExpiredError"
@@ -253,6 +251,15 @@ const getAllUsersWithoutId = async (req, res) => {
   res.status(200).json(foundUsers);
 };
 
+
+const telegram  = async (req, res) => {
+  const user = req.body;
+
+    console.log('Received Telegram user:', user);
+
+    res.status(200).json({ message: 'User authenticated successfully', user });
+}
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
@@ -266,4 +273,5 @@ export default {
   getAllUsers: ctrlWrapper(getAllUsers),
   setRate:ctrlWrapper(setRate),
   getAllUsersWithoutId:ctrlWrapper(getAllUsersWithoutId),
+  telegram:ctrlWrapper(telegram),
 };
