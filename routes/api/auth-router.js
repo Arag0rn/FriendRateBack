@@ -10,6 +10,7 @@ import { authenticate, isEmptyBody, upload } from "../../middlewares/index.js";
 import validateBody from "../../decorators/validaterBody.js";
 import { tryCatchWrapper } from "../../helpers/try-catch-wrapper.js";
 import { googleAuth, googleRedirect } from "../../controllers/auth-google.js";
+import authTelegram from "../../controllers/auth-telegram.js";
 import {
   getFacebookLoginUrl,
   getFacebookUserData,
@@ -73,6 +74,6 @@ authRouter.post("/forgot-password", isEmptyBody, tryCatchWrapper(forgotPassword)
 
 authRouter.post("/reset-password/:resetToken", isEmptyBody, tryCatchWrapper(resetPassword));
 
-authRouter.post('/telegram', authController.telegram)
+authRouter.post('/telegram', authTelegram.telegram)
 
 export default authRouter;

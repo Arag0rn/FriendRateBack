@@ -111,7 +111,7 @@ const signin = async (req, res) => {
     }
 
     const passwordCompare = await bcrypt.compare(password, user.password);
-  
+
     if (!passwordCompare) {
       throw HttpError(401, "Email or password is wrong");
     }
@@ -158,7 +158,7 @@ const deleteUser = async (req, res) => {
 const current = (req, res, next) => {
   req.user.token = undefined;
   res.status(200).json(req.user);
-}
+};
 
 const signout = async (req, res) => {
   const { _id } = req.user;
@@ -189,11 +189,9 @@ const updateProfile = async (req, res, next) => {
       updateFields.username = username;
     }
 
-    const result = await User.findOneAndUpdate(
-      { _id },
-      updateFields,
-      { new: true }
-    );
+    const result = await User.findOneAndUpdate({ _id }, updateFields, {
+      new: true,
+    });
 
     if (!result) {
       throw new Error(`User with email=${_id} not found`);
@@ -220,24 +218,22 @@ const patchAvatar = async (req, res) => {
 };
 
 const setRate = async (req, res, next) => {
+  const { username, rate } = req.body;
+  const user = await User.findOne({ username });
 
-const { username, rate } = req.body;
-const user = await User.findOne({ username });
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
 
-if (!user) {
-  return res.status(404).json({ error: 'User not found' });
-}
-
-const updatedUser = await User.findByIdAndUpdate(
-  user._id,
-  {
-    $inc: { rate, ratingCount: 1 }
-  },
-  { new: true }
-);
-res.status(200).json(updatedUser);
-
-}
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      $inc: { rate, ratingCount: 1 },
+    },
+    { new: true }
+  );
+  res.status(200).json(updatedUser);
+};
 
 const getAllUsers = async (req, res) => {
   const { users } = req.body;
@@ -252,13 +248,6 @@ const getAllUsersWithoutId = async (req, res) => {
 };
 
 
-const telegram  = async (req, res) => {
-  const user = req.body;
-
-    console.log('Received Telegram user:', user);
-
-    res.status(200).json({ message: 'User authenticated successfully', user });
-}
 
 export default {
   signup: ctrlWrapper(signup),
@@ -271,7 +260,7 @@ export default {
   updateProfile: ctrlWrapper(updateProfile),
   deleteUser: ctrlWrapper(deleteUser),
   getAllUsers: ctrlWrapper(getAllUsers),
-  setRate:ctrlWrapper(setRate),
-  getAllUsersWithoutId:ctrlWrapper(getAllUsersWithoutId),
-  telegram:ctrlWrapper(telegram),
+  setRate: ctrlWrapper(setRate),
+  getAllUsersWithoutId: ctrlWrapper(getAllUsersWithoutId),
+
 };
