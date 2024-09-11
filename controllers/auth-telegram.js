@@ -2,6 +2,10 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import { generateRandomPassword } from "../helpers/createPassword.js";
 import { ctrlWrapper } from "../decorators/index.js";
+import dotenv from "dotenv";
+
+
+const { JWT_SECRET } = process.env;
 
 const telegram = async (req, res) => {
     const { username, photo_url } = req.body;
