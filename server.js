@@ -10,7 +10,7 @@ import { roomHandler } from "./helpers/roomHandler.js";
 
 dotenv.config();
 
-const { PORT} = process.env;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.static('public'));
 
