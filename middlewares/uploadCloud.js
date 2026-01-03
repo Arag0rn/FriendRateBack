@@ -5,10 +5,10 @@ import { Readable } from 'stream';
 
 dotenv.config();
 
-const { CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = process.env;
+const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = process.env;
 
 cloudinary.config({
-    cloud_name: CLOUD_NAME,
+    cloud_name: CLOUDINARY_CLOUD_NAME,
     api_key: CLOUDINARY_API_KEY,
     api_secret: CLOUDINARY_API_SECRET,
 });
@@ -30,7 +30,7 @@ export const uploadToCloudinary = async (req, res, next) => {
 
         const uploadStream = cloudinary.uploader.upload_stream({
             folder: "avatars",
-            allowed_formats: ["jpg", "png"],
+            allowed_formats:["jpg", "png", "jpeg", "webp"],
             transformation: [
                 { width: 320, height: 320, crop: "fill", gravity: "face" },
                 { quality: "auto" }

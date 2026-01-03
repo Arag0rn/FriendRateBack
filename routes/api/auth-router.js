@@ -46,10 +46,6 @@ authRouter.patch("/update", authenticate, authController.updateProfile);
 
 authRouter.patch("/set-rate", authController.setRate);
 
-authRouter.get("/verify/:verificationToken", authController.verifyMail);
-
-authRouter.post("/verify", isEmptyBody, authController.verifyMail);
-
 authRouter.patch(
   "/avatars",
   handleUpload,

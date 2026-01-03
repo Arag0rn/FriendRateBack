@@ -53,10 +53,6 @@ const userSchema = new Schema(
       type: Number,
       default: false,
     },
-
-    verificationToken: {
-      type: String,
-    },
     token: String,
     refreshToken: String,
   },
